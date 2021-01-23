@@ -1,0 +1,62 @@
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Weather App</title>
+
+	<style>
+		
+		.clear {
+			background-color: #f1f1f1;
+		}
+
+		.cloudy {
+			/*background-color: #333333;*/
+			background: url('https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2448&q=80');
+		}
+
+	</style>
+</head>
+<body id="body">
+
+	<h1 id="conditions"></h1>
+
+	<input type="text" placeholder="Zip Code" id="new-location">
+	<button id="change-location">Lookup</button>
+
+
+	<script>
+
+		getWeather(72758);
+
+		document.getElementById("change-location").addEventListener('click', function() {
+			getWeather(document.getElementById("new-location").value);
+		});
+		
+		function getWeather(zipcode) {
+
+			var oReq = new XMLHttpRequest();
+			oReq.addEventListener("load", function(event) {
+				let response = JSON.parse(event.currentTarget.response);
+				console.log(response);
+
+				let output = document.getElementById("conditions");
+				output.innerText = response.name + " is currently " + response.weather[0].main + " and " + Math.ceil(response.main.temp) + " degrees.";
+
+				if (response.weather[0].main == 'Clouds') {
+					document.getElementById('body').classList.add('cloudy');
+				}
+
+				if (response.weather[0].main == 'Clear') {
+					document.getElementById('body').classList.add('clear');
+				}
+
+			});
+			oReq.open("GET", "https://api.openweathermap.org/data/2.5/weather?zip=" + zipcode +",us&appid={API KEY GOES HERE}&units=imperial");
+			oReq.send();
+		}
+
+	</script>	
+	
+</body>
+</html>
